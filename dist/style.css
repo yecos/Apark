@@ -14,3 +14,23 @@ body.exploring .hero{animation:none}#stage:has(.floor-zone.selected){cursor:defa
 .rooftop-level{border:1px solid #e8c68d88;letter-spacing:.5px}.floor-zone{vector-effect:non-scaling-stroke}
 
 @media(max-width:900px){.header nav{position:fixed;top:auto;bottom:98px;left:20px;right:20px;width:auto;z-index:5;justify-content:center;background:#172b2ac9}.hero{bottom:175px}.floor-panel{top:auto;bottom:170px;transform:none}.floor-rail{top:160px;bottom:185px}.location{top:92px}}
+
+/* Every floor stays visible in the picker; it never scrolls or clips. */
+.floor-rail{width:77px;top:145px;bottom:105px;gap:10px;justify-content:center}
+.rail-title{position:static;writing-mode:horizontal-tb;font-size:9px;letter-spacing:1.8px}
+#floorList{display:grid;grid-template-columns:repeat(2,36px);gap:5px;overflow:visible;max-height:none;padding:0;flex-shrink:0}
+.rail-level{width:36px;height:clamp(24px,4vh,32px);min-height:0;font-size:11px;flex-shrink:0}
+#floorList .rooftop-level{grid-column:1/-1;width:100%}
+.rail-base{display:none}.floor-panel{right:140px}
+@media(min-width:1600px){.floor-panel{right:155px}}
+@media(max-width:1000px){.floor-panel{right:120px}.floor-rail{right:20px}}
+@media(max-width:640px){
+  .floor-rail{right:12px;top:120px;bottom:165px;width:81px;gap:8px}
+  .rail-title{display:block;font-size:8px}
+  #floorList{grid-template-columns:repeat(2,38px)}.rail-level{width:38px;font-size:11px}
+  .floor-panel{left:16px;right:108px;bottom:160px;width:auto;padding:14px}
+  .floor-panel .panel-top,.floor-panel h2,.floor-panel>p{display:none}
+  .floor-panel .floor-heading{margin:0}.floor-panel .floor-heading strong{font-size:38px}
+  .floor-panel .level-actions{position:static;width:auto;margin:8px 0;padding:2px 0}
+  .floor-panel .primary{margin:0;min-height:40px;padding:11px 12px;font-size:11px;gap:10px}
+}

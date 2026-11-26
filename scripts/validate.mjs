@@ -22,4 +22,16 @@ if(!rooftop?.points||rooftop.y!==45||rooftop.y+rooftop.height!==117)throw Error(
 for(const level of levels)if(level.width<190||level.height<=0)throw Error('Incomplete floor coverage');
 if(html.indexOf('src="floor-map.js"')>html.indexOf('src="app.js"'))throw Error('Floor geometry must load before the app');
 if([html,js,css,mapSource].some(source=>source.includes('\uFFFD')))throw Error('Invalid source text encoding');
+const cameraSource=fs.readFileSync('dist/camera-fit.js','utf8');
+new vm.Script(cameraSource);
+const fitCamera=vm.runInNewContext(cameraSource+';aparkExplorationCamera');
+for(const [width,height]of [[1920,1080],[1440,900],[1280,720],[900,700],[656,878],[390,844],[360,640]]){
+  const camera=fitCamera(width,height);
+  const safeBottom=height-(width<=640?330:width<=900?190:110);
+  for(const level of levels){
+    const left=level.x*camera.scale+camera.x,right=left+level.width*camera.scale;
+    const top=level.y*camera.scale+camera.y,bottom=top+level.height*camera.scale;
+    if(left<0||right>width||top<99.99||bottom>safeBottom+.01)throw Error(`Unreachable ${level.label} at ${width}x${height}`);
+  }
+}
 console.log(JSON.stringify({syntax:'passed',uniqueIds:ids.length,elementReferences:'passed',assets:'passed',floorSegmentation:'passed',accessibilityBasics:'passed'}));

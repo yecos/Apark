@@ -29,11 +29,23 @@ function buildFloors(){
 }
 function updateSelection(){ $$('[data-floor]').forEach(el=>{const match=Number(el.dataset.floor)===selected;el.classList.toggle('selected',match);el.setAttribute('aria-pressed',String(match))});}
 function layout(){const w=stage.clientWidth,h=stage.clientHeight;base.scale=Math.max(w/2048,h/1365);base.x=(w-2048*base.scale)/2;base.y=(h-1365*base.scale)/2;camera(zoomed);if(hovered!==null)showHover(hovered);if($('#detailDialog').open&&activeTab==='facade')renderDetail()}
-function camera(zoom=false){let s=base.scale,x=base.x,y=base.y;if(zoom&&selected!==null){const b=floorBox(selected);s*=window.innerWidth<640?1.65:2.25;const targetX=stage.clientWidth*(window.innerWidth<640?.43:.43),targetY=stage.clientHeight*(window.innerWidth<640?.37:.48);x=targetX-(b.x+b.width/2)*s;y=targetY-(b.y+b.height/2)*s;}if(!zoom&&selected!==null){const b=floorBox(selected),safeTop=130,safeBottom=stage.clientHeight-(window.innerWidth<=900?185:110);if(b.y*s+y<safeTop)y=safeTop-b.y*s;if((b.y+b.height)*s+y>safeBottom)y=safeBottom-(b.y+b.height)*s;}currentCamera={scale:s,x,y};world.style.transform=`translate(${x}px,${y}px) scale(${s})`}
+function camera(zoom=false){
+  let s=base.scale,x=base.x,y=base.y;
+  if(zoom&&selected!==null){
+    const b=floorBox(selected);s*=window.innerWidth<640?1.65:2.25;
+    x=stage.clientWidth*.43-(b.x+b.width/2)*s;
+    y=stage.clientHeight*(window.innerWidth<640?.37:.48)-(b.y+b.height/2)*s;
+  }else if(selected!==null){
+    const fit=aparkExplorationCamera(stage.clientWidth,stage.clientHeight);
+    s=fit.scale;x=fit.x;y=fit.y;
+  }
+  currentCamera={scale:s,x,y};world.style.transform=`translate(${x}px,${y}px) scale(${s})`;
+}
+
 function showHover(n){if(zoomed)return;hovered=n;const box=floorBox(n),label=$('#hoverLabel');label.textContent=floorName(n);label.style.left=`${Math.min(stage.clientWidth-110,currentCamera.x+(box.x+box.width)*currentCamera.scale+12)}px`;label.style.top=`${currentCamera.y+(box.y+box.height/2)*currentCamera.scale-16}px`;label.hidden=false}
 function hideHover(){hovered=null;$('#hoverLabel').hidden=true}
 function selectFloor(n,{keepTour=false}={}){if(!keepTour)stopTour();selected=Math.max(FIRST_FLOOR,Math.min(LAST_LEVEL,n));document.body.classList.add('exploring');$('#floorPanel').hidden=false;$('#general').classList.remove('active');$('#explore').classList.add('active');$('#floorNumber').textContent=floorCode(selected);const data=config.levels[selected]||{};$('#floorTitle').textContent=data.title||(selected===LAST_LEVEL?'El proyecto desde arriba.':selected===FIRST_FLOOR?'El acceso al proyecto.':'Una mirada desde aquí.');$('#floorDescription').textContent=data.description||(selected===LAST_LEVEL?'Terraza superior de la torre.':selected===18?'El piso de las tres ventanas redondas.':'Acércate a la fachada y descubre este piso.');$('#levelPosition').textContent=selected===LAST_LEVEL?'Rooftop':`${floorCode(selected)} / ${config.count}`;$('#prevFloor').disabled=selected===FIRST_FLOOR;$('#nextFloor').disabled=selected===LAST_LEVEL;$('#instruction').textContent='Selecciona otro nivel o descubre el espacio';$('#viewLabel span').textContent=floorCode(selected);updateSelection();hideHover();camera(zoomed)}
-function resetView(){stopTour();selected=null;zoomed=false;document.body.classList.remove('exploring');$('#floorPanel').hidden=true;$('#viewLabel').hidden=true;$('#general').classList.add('active');$('#explore').classList.remove('active');$('#instruction').textContent='Selecciona un nivel sobre la torre';updateSelection();camera(false)}
+function resetView(){stopTour();selected=null;zoomed=false;document.body.classList.remove('exploring');$('#floorPanel').hidden=true;$('#viewLabel').hidden=true;$('#general').classList.add('active');$('#explore').classList.remove('active');$('#instruction').textContent='Selecciona un nivel sobre la torre';updateSelection();$('#floorList').scrollTop=0;camera(false)}
 function stopTour(){clearInterval(tourTimer);tourTimer=null;tourActive=false;$('#playIcon').textContent='▷';$('#tourLabel').textContent='Recorrer torre';$('#tour').setAttribute('aria-label','Iniciar recorrido automático')}
 function startTour(){if(tourActive)return stopTour();zoomed=false;camera(false);tourActive=true;$('#playIcon').textContent='Ⅱ';$('#tourLabel').textContent='Pausar recorrido';$('#tour').setAttribute('aria-label','Pausar recorrido automático');let n=FIRST_FLOOR;selectFloor(n,{keepTour:true});tourTimer=setInterval(()=>{n++;if(n>LAST_LEVEL){stopTour();return}selectFloor(n,{keepTour:true})},1800)}
 function showToast(message){$('#toast').textContent=message;$('#toast').hidden=false;clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>$('#toast').hidden=true,4500)}

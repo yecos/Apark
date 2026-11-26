@@ -40,3 +40,5 @@ Las transiciones actuales son acercamientos sobre una imagen 2D. La rotación 3D
 `Mi proyecto` guarda los ajustes en localStorage y las imágenes en IndexedDB del navegador. No se sincronizan entre visitantes, dispositivos ni dominios. Las imágenes cargadas por este panel no forman parte del repositorio ni del despliegue.
 
 La imagen ocupa toda la pantalla. Al seleccionar los pisos extremos, la cámara los coloca dentro del espacio visible. Las coordenadas originales se mantienen en `dist/floor-map.js`.
+
+En modo exploración, la torre completa permanece visible y estable al cambiar de piso. El fondo conserva la cobertura de toda la pantalla. El selector muestra los 18 pisos y RT en una cuadrícula completa, sin desplazamiento.
