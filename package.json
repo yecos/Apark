@@ -1,0 +1,10 @@
+{
+  "name": "apark-explorador",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Visualizador arquitect�nico interactivo de APARK por NEXO Studio",
+  "scripts": {
+    "check": "node scripts/validate.mjs",
+    "build": "node scripts/validate.mjs"
+  }
+}
