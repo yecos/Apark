@@ -15,6 +15,9 @@ body.exploring .hero{animation:none}#stage:has(.floor-zone.selected){cursor:defa
 
 @media(max-width:900px){.header nav{position:fixed;top:auto;bottom:98px;left:20px;right:20px;width:auto;z-index:5;justify-content:center;background:#172b2ac9}.hero{bottom:175px}.floor-panel{top:auto;bottom:170px;transform:none}.floor-rail{top:160px;bottom:185px}.location{top:92px}}
 
+/* Transparent layout regions must not block facade selection. */
+.header,.footer{pointer-events:none}.header a,.header button,.header nav,.footer button,.footer a{pointer-events:auto}
+body.exploring #stage::before{filter:blur(45px);opacity:.35;transform:scale(1.07)}
 /* Every floor stays visible in the picker; it never scrolls or clips. */
 .floor-rail{width:77px;top:145px;bottom:105px;gap:10px;justify-content:center}
 .rail-title{position:static;writing-mode:horizontal-tb;font-size:9px;letter-spacing:1.8px}
