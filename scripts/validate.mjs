@@ -10,5 +10,16 @@ for(const id of queries)if(!ids.includes(id))throw Error('Missing element '+id);
 for(const [,file]of html.matchAll(/(?:src|href)="([^"#]+)"/g)){if(!file.startsWith('http')&&!fs.existsSync(path.join(root,'dist',file)))throw Error('Missing asset '+file)}
 if(!css.includes('prefers-reduced-motion'))throw Error('Missing reduced motion support');
 if(!html.includes('<html lang="es">'))throw Error('Missing Spanish document language');
-for(const count of [1,16,18,40]){const top=180,bottom=1208,h=(bottom-top)/count;let area=0;for(let n=1;n<=count;n++){const y=bottom-n*h;if(y<top-.001||y+h>bottom+.001)throw Error('Invalid floor bounds');area+=h}if(Math.abs(area-(bottom-top))>.001)throw Error('Floor regions do not cover facade')}
+const mapSource=fs.readFileSync('dist/floor-map.js','utf8');
+new vm.Script(mapSource);
+const levels=vm.runInNewContext(mapSource+';APARK_LEVELS');
+const floors=levels.filter(level=>level.kind==='floor'),rooftop=levels.find(level=>level.kind==='rooftop');
+if(floors.length!==18||levels.length!==19)throw Error('Expected 18 floors and a separate rooftop');
+if(floors[0].id!==1||floors[0].y!==1206||floors[0].y+floors[0].height!==1280)throw Error('Floor 1 must cover the street entrance');
+if(floors[17].y!==117||floors[17].y+floors[17].height!==181)throw Error('Floor 18 must cover all three circular windows');
+for(let i=1;i<floors.length;i++)if(floors[i].y+floors[i].height!==floors[i-1].y)throw Error('Gap or overlap at floor '+floors[i].id);
+if(!rooftop?.points||rooftop.y!==45||rooftop.y+rooftop.height!==117)throw Error('Rooftop must follow the stepped roof silhouette');
+for(const level of levels)if(level.width<190||level.height<=0)throw Error('Incomplete floor coverage');
+if(html.indexOf('src="floor-map.js"')>html.indexOf('src="app.js"'))throw Error('Floor geometry must load before the app');
+if([html,js,css,mapSource].some(source=>source.includes('\uFFFD')))throw Error('Invalid source text encoding');
 console.log(JSON.stringify({syntax:'passed',uniqueIds:ids.length,elementReferences:'passed',assets:'passed',floorSegmentation:'passed',accessibilityBasics:'passed'}));

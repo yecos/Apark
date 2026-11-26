@@ -31,10 +31,12 @@ Importar `yecos/Apark`, usar la raíz del repositorio y el directorio de salida 
 
 ## Información por confirmar
 
-La selección inicial usa **18 niveles visuales de referencia y planta baja**; debe ajustarse con los planos y la numeración reales. No se incluyen precios, áreas, unidades o disponibilidad inventados.
+La fachada tiene **18 pisos seleccionables y un rooftop independiente**. El piso 1 es el acceso a nivel de calle; el piso 18 contiene las tres ventanas redondas. Las zonas se trazan por las losas visibles del render, no mediante alturas uniformes. No se incluyen precios, áreas, unidades o disponibilidad inventados.
 
 Las transiciones actuales son acercamientos sobre una imagen 2D. La rotación 3D del referente requiere un modelo del proyecto; las plantas e interiores se agregan con archivos reales.
 
 ## Datos locales
 
 `Mi proyecto` guarda los ajustes en localStorage y las imágenes en IndexedDB del navegador. No se sincronizan entre visitantes, dispositivos ni dominios. Las imágenes cargadas por este panel no forman parte del repositorio ni del despliegue.
+
+La imagen ocupa toda la pantalla. Al seleccionar los pisos extremos, la cámara los coloca dentro del espacio visible. Las coordenadas originales se mantienen en `dist/floor-map.js`.
