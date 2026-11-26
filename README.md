@@ -42,3 +42,5 @@ Las transiciones actuales son acercamientos sobre una imagen 2D. La rotación 3D
 La imagen ocupa toda la pantalla. Al seleccionar los pisos extremos, la cámara los coloca dentro del espacio visible. Las coordenadas originales se mantienen en `dist/floor-map.js`.
 
 En modo exploración, la torre completa permanece visible y estable al cambiar de piso. El fondo conserva la cobertura de toda la pantalla. El selector muestra los 18 pisos y RT en una cuadrícula completa, sin desplazamiento.
+
+La vista inicial utiliza una panorámica extendida 21:9 para llenar pantallas de PC y conservar la torre completa. La geometría seleccionable se calibra sobre esa misma imagen.
